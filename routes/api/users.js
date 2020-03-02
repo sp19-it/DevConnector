@@ -7,50 +7,50 @@ const bcrypt = require('bcryptjs');
 
 const jwt = require('jsonwebtoken')
 const keys = require('../../config/keys')
-// express is a big library
-// another layer of express instanciation. Only loading the router portion.
+
+// express is a big library. another layer of express instanciation. only loading the router portion.
 const router = express.Router();
 
 /* testing purpose. subroute '/test'
 router.get('/test', (req, res) => res.json({msg: "User Works!"}));*/
 
-// Provide meaning comments. 
+/* provide meaning, comments */
 // @route   POST api/users/register (about route)
 // @desc    Register user
 // @access  Public (anybody can access)
-
 router.post('/register', (req, res) => { // req contains the parsed data
+  // looking at User collection(already talking to MongoDB), and find the match (match the Schema)
   User.findOne({email: req.body.email})
-  .then(user => {
+    .then(user => {     // previous call finished.
     if (user) {
       // every res has status. default is 200
       return res.status(400).json({email: 'Email already exists!'}) 
     } else {
       const avatar = gravatar.url(req.body.email, {
-        s: '200',
-        r: 'pg',
-        d: 'mm'
+        s: '200', // size
+        r: 'pg', // only show appropriate image
+        d: 'mm' // if there is no image, give default
       });
 
       const newUser = new User({
         name: req.body.name,
         email: req.body.email,
         password: req.body.password, // plain text password
-        avatar
+        avatar // deconstruction (avatar: avatar)
       });
 
-      bcrypt.genSalt(10, (err, salt) => {
-        if (err) throw err;
+      // encryption, hash password
+      bcrypt.genSalt(10, (err, salt) => {  // generate a key for me. err:fail, salt:key
+        if (err) throw err;  
         bcrypt.hash(newUser.password, salt, (err, hash) => {
           newUser.password = hash; //overwrite
           newUser.save()
           .then(user => res.json(user))
           .catch(err => console.log(err))
         })
-
-      });  // generate key (salt=key)
+      });  
     }
-  })   // previous call finished.
+  }) 
   .catch(err => console.log(err))
 })
 
