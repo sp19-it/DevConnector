@@ -1,18 +1,18 @@
 // import libraries
 const express = require('express'); // router
-const mongoose = require('mongoose'); 
-const bodyParser = require('body-parser');
+const mongoose = require('mongoose'); // talks to MongoDB
+const bodyParser = require('body-parser'); //parses html to json
 
-// break into 3 files. don't write all in server.js
+// break into 3 js files. don't write all in server.js
 const users = require('./routes/api/users');
 const profile = require('./routes/api/profile');
 const posts = require('./routes/api/posts');
 
-// create an instance of express. instanciate express. whole express memory
+// create an instance of express. instanciate express. loading the whole express in memory
 const app = express();
 
-// body parser middleware(fuction/configuration). parse body of html and create json
-app.use(bodyParser.urlencoded({ extended: false }));
+// body parser middleware(fuction/configuration). parse body of html and create json with only data that is needed
+app.use(bodyParser.urlencoded({ extended: false })); // encodes special characters
 app.use(bodyParser.json());
 
 // DB config. read the config file and pass it to mongoose
@@ -28,7 +28,7 @@ mongoose
 // when user comes to the homepage "/"
 app.get("/", (req, res) => res.send("Hello! World!"));
 
-// routing. When you see 'api/users' then take them to users. 
+// routing. when you see 'api/users' then take them to users. 
 app.use('/api/users', users);
 app.use('/api/profile', profile);
 app.use('/api/posts', posts);
