@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 const keys = require('../../config/keys')
 
-// express is a big library. this is another layer of express instanciation. only loading only the router portion in memory.
+// express is a big library. this is another layer of express instanciation. loading only the router portion in memory.
 const router = express.Router();
 
 /* testing purpose. subroute '/test'
@@ -33,11 +33,11 @@ router.post('/register', (req, res) => { // req contains the parsed body of the 
         d: 'mm' // if there is no image, give default
       });
 
-      // put this new user in the database
+      // create this new user in the database
       const newUser = new User({
         name: req.body.name,
         email: req.body.email,
-        password: req.body.password, // plain text password
+        password: req.body.password, // this plain text password needs to be encrypted (below)
         avatar // deconstruction (avatar: avatar)
       });
 
@@ -69,7 +69,7 @@ router.post('/login', (req, res) => {
       .then(isMatch => {
         if (isMatch) {
           // User matched, let's create token
-          // pick pieces of info to create a token -> payload
+          // pick pieces of your info(your identification) to create a token -> payload
           const payload = {
             id: user.id, 
             name: user.name, 
@@ -82,6 +82,7 @@ router.post('/login', (req, res) => {
               {expiresIn: 3600}, (err, token) => {
                 res.json({
                   success: true,
+                  // Bearer: You have the responsibility whether your delete or not
                   token: 'Bearer ' + token
                 })
               })

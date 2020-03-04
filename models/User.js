@@ -3,7 +3,7 @@
 // connect to MongoDB, mongoose talks to MongoDB
 const mongoose = require('mongoose');
 
-// what is User? definition of data, mongoose schema lets you define data. converted to collection. tell MongoDB that this is Schema of the collection that we are going to build
+// Schema = definition of data. tell MongoDB that this is a Schema of the collection that we are going to build. write a Schema in MongoDB that will be converted to a collection.
 const Schema = mongoose.Schema;
 
 // create new instance of Schema, define structure of User model
