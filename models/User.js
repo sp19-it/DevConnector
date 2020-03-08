@@ -1,4 +1,4 @@
-// deifinition of what one User object is going to be
+// User.js: deifinition of what one "User" object is going to be
 
 // connect to MongoDB, mongoose talks to MongoDB
 const mongoose = require('mongoose');
@@ -33,6 +33,7 @@ const userSchema = new Schema({
 });
 
 // want to pass a reference to the actual collection in MongoDB. Tell MongoDB to make a collection out of this structure, and pass the reference that is being used.
+// ask mongoose to create a model(collection), call collection as "users" using userSchema structure
 // 'users' is collection name in MongoDB by using userSchema. User is the model.
 // User has direct link to the collection in MongoDB.
 module.exports = User = mongoose.model('users', userSchema);

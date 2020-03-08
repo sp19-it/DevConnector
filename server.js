@@ -7,6 +7,7 @@ const bodyParser = require('body-parser'); //parses html to json
 const users = require('./routes/api/users');
 const profile = require('./routes/api/profile');
 const posts = require('./routes/api/posts');
+const passport = require('passport');
 
 // create an instance of express. instanciate express. loading the whole express in memory
 const app = express();
@@ -23,6 +24,11 @@ mongoose
 .connect(db)
 .then(() => console.log("MongoDB Connected!"))
 .catch(err => console.log(err));
+
+// Passport middleware. 
+app.use(passport.initialize());
+// Passport config
+require('./config/passport')(passport);
 
 // write the first route
 // when user comes to the homepage "/"

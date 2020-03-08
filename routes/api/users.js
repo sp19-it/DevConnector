@@ -5,11 +5,15 @@ const User = require('../../models/User'); // User model
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 
-const jwt = require('jsonwebtoken')
-const keys = require('../../config/keys')
+const jwt = require('jsonwebtoken');
+const keys = require('../../config/keys');
+
+const passport = require('passport');
 
 // express is a big library. this is another layer of express instanciation. loading only the router portion in memory.
 const router = express.Router();
+
+
 
 /* testing purpose. subroute '/test'
 router.get('/test', (req, res) => res.json({msg: "User Works!"}));*/
@@ -42,12 +46,12 @@ router.post('/register', (req, res) => { // req contains the parsed body of the 
       });
 
       // encryption, hash password
-      bcrypt.genSalt(10, (err, salt) => {  // generate a key for me. err:fail, salt:key
+      bcrypt.genSalt(10, (err, salt) => {  // asking bcrypt library to generate a key for me. Key will be maintained. err:fail, salt:key
         if (err) throw err;  
         bcrypt.hash(newUser.password, salt, (err, hash) => {
-          newUser.password = hash; //overwrite
+          newUser.password = hash; //overwrite to the hashed password
           newUser.save()
-          .then(user => res.json(user)) // MongoDB creates date, id, version as well
+          .then(user => res.json(user)) // MongoDB creates date, id(primary unique key), version as well
           .catch(err => console.log(err))
         })
       });  
@@ -68,7 +72,7 @@ router.post('/login', (req, res) => {
       bcrypt.compare(req.body.password, user.password) // "user" is already in the database
       .then(isMatch => {
         if (isMatch) {
-          // User matched, let's create token
+          // User matched, let's create token. token needs to be generated base off of your identification
           // pick pieces of your info(your identification) to create a token -> payload
           const payload = {
             id: user.id, 
@@ -95,5 +99,19 @@ router.post('/login', (req, res) => {
   .catch(err => console.log(err))
 })
 
-// Pick what I want to export: router. 
+// @route   GET api/users/current 
+// @desc    Return current user info
+// @access  Private
+router.get('/current',
+  passport.authenticate('jwt', {session: false}), //let the passport figure out token. session: carry on the new page
+  (req, res) => {
+    res.json({
+      id: req.user.id,
+      name: req.user.name,
+      email: req.user.email
+    })
+  }
+)
+
+// pick what I want to export: router. 
 module.exports = router;
