@@ -5,8 +5,9 @@ const bodyParser = require('body-parser'); //parses html to json
 
 // break into 3 js files. don't write all in server.js
 const users = require('./routes/api/users');
-const profile = require('./routes/api/profile');
+const profiles = require('./routes/api/profiles');
 const posts = require('./routes/api/posts');
+
 const passport = require('passport');
 
 // create an instance of express. instanciate express. loading the whole express in memory
@@ -25,7 +26,7 @@ mongoose
 .then(() => console.log("MongoDB Connected!"))
 .catch(err => console.log(err));
 
-// Passport middleware. 
+// Passport middleware
 app.use(passport.initialize());
 // Passport config
 require('./config/passport')(passport);
@@ -34,9 +35,9 @@ require('./config/passport')(passport);
 // when user comes to the homepage "/"
 app.get("/", (req, res) => res.send("Hello! World!"));
 
-// routing. when you see 'api/users' then take them to users. 
+// routing. when you see 'api/users' then take them to users
 app.use('/api/users', users);
-app.use('/api/profile', profile);
+app.use('/api/profiles', profiles);
 app.use('/api/posts', posts);
 
 // write port

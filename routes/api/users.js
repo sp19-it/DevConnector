@@ -13,7 +13,8 @@ const passport = require('passport');
 // express is a big library. this is another layer of express instanciation. loading only the router portion in memory.
 const router = express.Router();
 
-
+const validateRegisterInput = require('../../validation/register');
+const validateLoginInput = require('../../validation/login');
 
 /* testing purpose. subroute '/test'
 router.get('/test', (req, res) => res.json({msg: "User Works!"}));*/
@@ -23,6 +24,10 @@ router.get('/test', (req, res) => res.json({msg: "User Works!"}));*/
 // @desc    Register user
 // @access  Public (anybody can access)
 router.post('/register', (req, res) => { // req contains the parsed body of the data
+  const {errors, isValid} = validateRegisterInput(req.body)
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
   // looking at User collection(already talking to MongoDB), and find the match (match the Schema)
   User.findOne({email: req.body.email})
     .then(user => {     // previous call finished
@@ -64,6 +69,11 @@ router.post('/register', (req, res) => { // req contains the parsed body of the 
 // @desc    Login user
 // @access  Public (anybody can access)
 router.post('/login', (req, res) => {
+  const { errors, isValid } = validateLoginInput(req.body)
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+  
   User.findOne({email: req.body.email})
   .then(user => {
     if (!user) {
@@ -101,12 +111,12 @@ router.post('/login', (req, res) => {
 
 // @route   GET api/users/current 
 // @desc    Return current user info
-// @access  Private
+// @access  Private : needs 3 param. intermediate step, passport
 router.get('/current',
-  passport.authenticate('jwt', {session: false}), //let the passport figure out token. session: carry on the new page
+  passport.authenticate('jwt', {session: false}), //let the passport figure out the token. {session: carry the session on the new page?}
   (req, res) => {
     res.json({
-      id: req.user.id,
+      id: req.user.id,  // user is already filled by passport 
       name: req.user.name,
       email: req.user.email
     })
