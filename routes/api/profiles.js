@@ -66,7 +66,7 @@ router.get('/handle/:handle', (req, res) => {
     }
     res.json(profile);
   })
-    .catch(err => res.status(404).json({ profile: 'There is no profile for this user' }));
+  .catch(err => res.json(err));
 });
 
 // @route   GET api/profiles/user/:user_id
@@ -84,7 +84,7 @@ router.get('/user/:user_id', (req, res) => {
     }
     res.json(profile)
   })
-  .catch(err => res.status(404).json({ profile: 'There is no profile for this user' }));
+  .catch(res.status(404).json({ profile: 'There is no profile for this user' }));
 })
 
 // @route POST api/profile
@@ -216,7 +216,7 @@ router.post(
         };
 
         // ADD to experience array
-        // unshift: add the latest object to the array
+        // unshift: add the latest object goes to the top 
         profile.experience.unshift(newExp);
         profile.save()
         .then(profile => res.json(profile))
