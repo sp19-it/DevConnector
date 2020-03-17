@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const postSchema = new Schema({
+  // reference the "user" Schema
   user: {
     type: Schema.Types.ObjectId,
     ref: 'users'
@@ -10,7 +11,8 @@ const postSchema = new Schema({
     type: String,
     required: true
   },
-  name: {  // be more performant 
+  // writing name and avatar again, less space but more performant (it is better than referencing to the "user" again)
+  name: {  
     type: String
   },
   avatar: {

@@ -13,14 +13,15 @@ router.get('/', (req, res) => {
   Post.find()
   .sort({ date: -1 })
   .then(posts => res.json(posts))
-  .catch(err => res.status(404).json({ nopostsfound: 'No posts found'}))
+  .catch(() => res.status(404).json({ nopostsfound: 'No posts found'}))
  }
 );
 
-// @route GET api/posts/:id -> id meaning "Post" _id
-// @desc Get Post by ID
+// @route GET api/posts/:id -> id meaning Post _id
+// @desc Get Post by Post _id
 // @access Public
 router.get('/:id', (req, res) => {
+  // Each Post has its own unique "_id" genereated by MongoDB
   Post.findById(req.params.id) 
   .then(post => {
     if (post) {
@@ -29,7 +30,7 @@ router.get('/:id', (req, res) => {
       return res.status(404).json({ postnotfound: 'Post not found' });
     }
   })
-  .catch(err => res.status(404).json({postnotfound: 'Post not found'}));
+  .catch(() => res.status(404).json({postnotfound: 'Post not found'}));
 })
 
 // @route POST api/posts
@@ -37,14 +38,16 @@ router.get('/:id', (req, res) => {
 // @access Private
 router.post(
   '/',
-  passport.authenticate('jwt', {session: false}),
+  passport.authenticate('jwt', { session: false }),
   (req, res) => {
+    // validate the fields
     const { errors, isValid } = validatePostInput(req.body);
 
     if (!isValid) {
       return res.status(400).json(errors);
     }
 
+    // create a new post
     const newPost = new Post({
       user: req.user.id,
       text: req.body.text,
@@ -52,40 +55,41 @@ router.post(
       avatar: req.body.avatar,
     })
 
+    // save
     newPost.save()
     .then(post => res.json(post));
   }
 );
 
-// @route DELETE api/posts/:id
-// @desc DELETE Post by ID
+// @route DELETE api/posts/:id -> id is Post _id
+// @desc DELETE Post by Post _id
 // @access Priavte
 router.delete(
   '/:id',
-  passport.authenticate('jwt', {session: false}),
+  passport.authenticate('jwt', { session: false }),
   (req, res) => {
-    // Post has its own id from MongoDB. _id
+    // each Post has its own unique "_id" genereated by MongoDB
     Post.findById(req.params.id)
     .then(post => {
       if (post.user.toString() !== req.user.id) {
         return res.status(401).json({ notauthorized: 'User not authorized'});
       } 
 
+      // remove the post
       post.remove()
       .then(() => res.json({ success: true }))
       .catch(err => res.json(err))
     })
-    .catch(err => res.json(err))
+    .catch(() => res.status(401).json({ notauthorized: 'User not authorized' }));
   }
 );
 
-// @route POST api/posts/like/:id
-// @desc LIKE Post
+// @route POST api/posts/like/:id  ->  id is Post _id
+// @desc LIKE the post
 // @access Private
 router.post(
-  // id is Post _id
   '/like/:id', 
-  passport.authenticate('jwt', {session:false}),
+  passport.authenticate('jwt', { session:false }),
   (req, res) => {
     Post.findById(req.params.id)
     .then(
@@ -94,21 +98,22 @@ router.post(
           return res.status(400).json({alreadyliked: 'You already liked this post!'});
         }
 
+        // Add like to the likes array
         post.likes.unshift({ user: req.user.id });
 
+        // save
         post.save()
         .then(post => res.json(post))
       }
     )
-    .catch(err => res.json(err));
+    .catch(() => res.json({ postnotfound: 'Post not found' }));
   }
-)
+);
 
-// @route POST api/posts/unlike/:id
+// @route POST api/posts/unlike/:id  ->  id is Post _id
 // @desc UNLIKE the post
 // @access Private
 router.post(
-  // id is POST _id
   '/unlike/:id',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
@@ -118,22 +123,24 @@ router.post(
         return res.status(400).json({notliked: 'You have not liked this post yet!'});
       }
 
-      //If the user already liked, then remove the like
-      const removeIndex = post.likes
+      // if the user had already liked, then remove the like fromt the likes array
+      const removeIndex = 
+      post.likes
       .map(like => like.user.toString())
       .indexOf(req.user.id);
 
       post.likes.splice(removeIndex, 1);
 
+      // save
       post.save()
       .then(post => res.json(post))
      }
     )
-   .catch(err => res.json(err));  
+    .catch(() => res.json({ postnotfound: 'Post not found' }));  
   }
-)
+);
 
-// @route POST api/posts/comment/:id
+// @route POST api/posts/comment/:id  ->  id is Post _id
 // @desc ADD Comment to the post
 // @access Private
 router.post(
@@ -149,26 +156,27 @@ router.post(
     Post.findById(req.params.id)
     .then(post => {
       if (post) {
-        // When there is the matching post, add a new comment
+        // When there is the matching post, add a new comment on that post
         const newComment = {
-          user: req.user.id,
+          user: req.user.id,  // grabing from "user" id
           text: req.body.text,
           name: req.body.name,
           avatar: req.body.avatar
         };
 
-        // shifting the comment to the comments array
+        // shifting new comment to the comments array
         post.comments.unshift(newComment);
 
+        // save
         post.save()
         .then(post => res.json(post));
       }
     })
-    .catch(err => res.json(err));
+    .catch(() => res.json({ postnotfound: 'Post not found' }));
   }
 );
 
-// @route DELETE api/posts/comment/:id/:comment_id -> 1) id is Post _id, 2) comment_id is comment _id
+// @route DELETE api/posts/comment/:id/:comment_id  ->  1) id is Post _id, 2) comment_id is comment _id
 // @desc DELETE Post from the comment
 // @access Private
 router.delete(
@@ -178,6 +186,7 @@ router.delete(
 
     Post.findById(req.params.id)
     .then(post => {
+      // each comment has its own unique _id generated by MongoDB
       if (post.comments.filter(comment => comment._id.toString() === req.params.comment_id).length === 0) {
         return res.status(404).json({commentnotexists: 'Comment does not exists'});
       }
@@ -187,13 +196,14 @@ router.delete(
 
       post.comments.splice(removeIndex, 1);
 
+      // save
       post.save()
       .then(post => res.json(post))
 
     })
-    .catch(err => req.json(err));
+    .catch(() => res.json({ postnotfound: 'Post not found' }));
   }
-)
+);
 
 module.exports = router;
 
