@@ -51,8 +51,8 @@ router.post(
     const newPost = new Post({
       user: req.user.id,
       text: req.body.text,
-      name: req.body.name,
-      avatar: req.body.avatar,
+      name: req.user.name, //question: user? body?
+      avatar: req.user.avatar,
     })
 
     // save
@@ -160,8 +160,8 @@ router.post(
         const newComment = {
           user: req.user.id,  // grabing from "user" id
           text: req.body.text,
-          name: req.body.name,
-          avatar: req.body.avatar
+          name: req.user.name,
+          avatar: req.user.avatar
         };
 
         // shifting new comment to the comments array
@@ -177,7 +177,7 @@ router.post(
 );
 
 // @route DELETE api/posts/comment/:id/:comment_id  ->  1) id is Post _id, 2) comment_id is comment _id
-// @desc DELETE Post from the comment
+// @desc DELETE comment on the post
 // @access Private
 router.delete(
   '/comment/:id/:comment_id',
