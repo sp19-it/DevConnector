@@ -85,7 +85,7 @@ router.post('/login', (req, res) => {
           // User matched, let's create token. token needs to be generated base off of your identification
           // pick pieces of your info(your identification) to create a token -> payload
           const payload = {
-            id: user.id, 
+            id: user._id, 
             name: user.name, 
             avatar: user.avatar};
 

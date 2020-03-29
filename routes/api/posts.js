@@ -3,6 +3,8 @@ const router = express.Router();
 const passport = require('passport');
 
 const Post = require('../../models/Post');
+const Profile = require('../../models/Profile');
+
 
 const validatePostInput = require('../../validation/post');
 
@@ -51,7 +53,7 @@ router.post(
     const newPost = new Post({
       user: req.user.id,
       text: req.body.text,
-      name: req.user.name, //question: user? body?
+      name: req.user.name,
       avatar: req.user.avatar,
     })
 
@@ -123,7 +125,7 @@ router.post(
         return res.status(400).json({notliked: 'You have not liked this post yet!'});
       }
 
-      // if the user had already liked, then remove the like fromt the likes array
+      // if the user had already liked, then remove the like from the likes array
       const removeIndex = 
       post.likes
       .map(like => like.user.toString())
