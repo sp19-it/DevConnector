@@ -1,4 +1,4 @@
-// write anything related to the authentication into the store (give a specific job)
+// write anything related to the authentication into the store (give a specific responsibility)
 
 // 1. WHAT part (data)
 const initialState = {

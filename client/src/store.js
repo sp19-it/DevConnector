@@ -4,9 +4,11 @@ import rootReducer from './reducers/index'
 
 const middleWare = [thunk]
 
-// three params: reducers, initial state(optional), enhance data(optional)
+// three params: 1) reducers 2) initial state: when you want to have initial data as soons as App.js starts (optional) 3) enhance data: transform the raw data as how you want it to be (optional)
 const store = createStore(
+  // returns array
   rootReducer,
+  // initial data
   {},
   // compose: put multiple enhancements together
   compose(
