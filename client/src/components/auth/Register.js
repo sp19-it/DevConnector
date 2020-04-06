@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import classnames from 'classnames';
+import { registerUser } from '../../actions/authActions';
+import { connect } from 'react-redux'; 
+import PropTypes from 'prop-types';
 
 // Register inherits from Component(parent)
 class Register extends Component {
@@ -18,7 +20,7 @@ class Register extends Component {
       errors: {}
     };
 
-    // binding this current control(this)
+    // bind this current control(this)
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
@@ -39,16 +41,25 @@ class Register extends Component {
       password2: this.state.password2
     };
 
-    axios
-    .post("/api/users/register", newUser)
-    .then(res => console.log(res.data))
-    .catch(err => this.setState({ errors: err.response.data }));
+    // registerUser is available through Register component props
+    // React itself builds histroy array
+    this.props.registerUser(newUser, this.props.history);
+  }
+
+  // when NEW data arrives from Redux store componentWillReceiveProps gets triggered
+  // nextProps : new data (new state)
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({ errors: nextProps.errors });
+    }
   }
 
   render() {
-    const errors = this.state.errors
+    const errors = this.state.errors;
+    const { user } = this.props.auth;
     return (
     <div className="register">
+      { user ? user.name : '' }
         <div className="container">
           <div className="row">
             <div className="col-md-8 m-auto">
@@ -62,7 +73,7 @@ class Register extends Component {
                   placeholder="Name" 
                   name="name"  
                   value={ this.state.name } // bind
-                  onChange={ this.onChange } // onChange = event on the textbox, when the textbox changes, fire onChange function
+                  onChange={ this.onChange } // onChange = event in the textbox, when the textbox changes, fires onChange function
                   />
                  <div className="invalid-feedback">{ errors.name }</div> 
                 </div>
@@ -106,4 +117,24 @@ class Register extends Component {
   }
 }
 
-export default Register;
+// to ensure that the dependencies are up and running and be available in Register component before the appliacation starts
+Register.propTypes = {
+  registerUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+}
+
+// map the State from Redux store to Register component props
+const mapStateToProps = state => ({
+  // put state.auth into Register component property called "auth"
+  auth: state.auth,
+  errors: state.errors
+})
+
+const mapDispatchToProps = {
+  registerUser
+}
+
+// getting state from Redux store, going to ACTION to fire dispatch type
+// when Register component is connected to Redux store, registerUser automatically gets added to Register component props
+export default connect(mapStateToProps, mapDispatchToProps)(Register);
