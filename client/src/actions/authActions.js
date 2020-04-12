@@ -3,11 +3,11 @@ import axios from 'axios';
 import setAuthToken from '../utils/setAuthToken';
 import jwt_decode from 'jwt-decode';
 
-// "Register user" ACTION
+// Action Creator "registerUser"
 export const registerUser = (userData, history) => dispatch => {
   axios
   .post('/api/users/register', userData)
-  // history: browser history,forwarding to login page
+  // history: browser history -> forwards to login page
   .then(res => history.push('/login') )
   .catch(err => 
     dispatch({
@@ -17,13 +17,14 @@ export const registerUser = (userData, history) => dispatch => {
   );
 };
 
-// "Login user"  ACTION : get user token
+// Action Creator: "loginUser"
 export const loginUser = userData => dispatch => {
   axios
   .post('/api/users/login', userData)
   .then(res => {
     const token = res.data.token;
-    // save token to localstorage(store in browser)
+    // save token to localstorage(store in the browser session)
+    localStorage.setItem('jwtToken', token);
 
     // set token to axios "Authentication header"
     setAuthToken(token);
@@ -31,7 +32,7 @@ export const loginUser = userData => dispatch => {
     // decode token to get the user 
     const decoded = jwt_decode(token);
 
-    // dispatch "SET_CURRENT_USER"
+    // dispatch "SET_CURRENT_USER" action
     dispatch({
       type: SET_CURRENT_USER,
       payload: decoded
@@ -43,4 +44,14 @@ export const loginUser = userData => dispatch => {
       payload: err.response.data
     })
   );
+};
+
+// Action Creator: "logoutUser"
+export const logoutUser = () => dispatch => {
+  localStorage.removeItem('jwtToken');
+  setAuthToken(false)
+  dispatch({
+    type: SET_CURRENT_USER,
+    payload: {}
+  })
 };

@@ -4,14 +4,13 @@ import { registerUser } from '../../actions/authActions';
 import { connect } from 'react-redux'; 
 import PropTypes from 'prop-types';
 
-// Register inherits from Component(parent)
+// Register inherits from React.Component(parent)
 class Register extends Component {
 
   constructor() {
-    // inherit Component Class 
+    // inherits React.Component
     super()
-    
-    // Register inherits from Component Class(Component already has state object), thus this
+    // Register inherits from React.Component(it already has state object), thus us "this"
     this.state = {
       name: '',
       email: '',
@@ -20,14 +19,13 @@ class Register extends Component {
       errors: {}
     };
 
-    // bind this current control(this)
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
 
   onChange(e) {
     // console.log(e.target)
-    // setState => change value in the state
+    // setState => changes value in the state
     this.setState({ [e.target.name] : e.target.value });
   }
 
@@ -47,13 +45,13 @@ class Register extends Component {
   }
 
   // when NEW data arrives from Redux store componentWillReceiveProps gets triggered
-  // nextProps : new data (new state)
+  // nextProps = this.props 
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({ errors: nextProps.errors });
     }
   }
-
+  
   render() {
     const errors = this.state.errors;
     const { user } = this.props.auth;
@@ -124,7 +122,7 @@ Register.propTypes = {
   errors: PropTypes.object.isRequired
 }
 
-// map the State from Redux store to Register component props
+// map the state object from Redux store to Register component props
 const mapStateToProps = state => ({
   // put state.auth into Register component property called "auth"
   auth: state.auth,
@@ -135,6 +133,6 @@ const mapDispatchToProps = {
   registerUser
 }
 
-// getting state from Redux store, going to ACTION to fire dispatch type
-// when Register component is connected to Redux store, registerUser automatically gets added to Register component props
+// 1) getting state object from Redux store 2) linking to Action Creator(function) to dispatch the Action
+// when Register component is connected to Redux store, Action Creator automatically gets added to Register component props
 export default connect(mapStateToProps, mapDispatchToProps)(Register);
