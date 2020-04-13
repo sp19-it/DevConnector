@@ -23,16 +23,16 @@ export const loginUser = userData => dispatch => {
   .post('/api/users/login', userData)
   .then(res => {
     const token = res.data.token;
-    // save token to localstorage(store in the browser session)
+    // 1. save token to localstorage(save in the browser session)
     localStorage.setItem('jwtToken', token);
 
-    // set token to axios "Authentication header"
+    // 2. attach token on "Authentication header" for every axios request
     setAuthToken(token);
 
-    // decode token to get the user 
+    // 3. decode token 
     const decoded = jwt_decode(token);
 
-    // dispatch "SET_CURRENT_USER" action
+    // 4. dispatch "SET_CURRENT_USER" action
     dispatch({
       type: SET_CURRENT_USER,
       payload: decoded
@@ -49,9 +49,9 @@ export const loginUser = userData => dispatch => {
 // Action Creator: "logoutUser"
 export const logoutUser = () => dispatch => {
   localStorage.removeItem('jwtToken');
-  setAuthToken(false)
+  setAuthToken(false);
   dispatch({
     type: SET_CURRENT_USER,
     payload: {}
-  })
+  });
 };

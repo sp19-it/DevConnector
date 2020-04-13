@@ -21,20 +21,22 @@ import { logoutUser } from './actions/authActions';
 
 // when the user comes back to the app (re-open the browser), 1) check if the token is still stored in localStorage 2) check if the token has expired
 if (localStorage.jwtToken) {
-  // decrypt token
+  // 1. decrypt token
   const decoded = jwt_decode(localStorage.jwtToken);
 
-  // check if token is expired
+  // 2. check if token is expired
   const currentTime = Date.now() / 1000
   if (decoded.exp < currentTime ) {
     store.dispatch(logoutUser())
     window.location.href = '/login'
   }
-  
-  // save axios Auth Header
+
+ 
+  // 3. save token on Authentication Header for every axios request
   setAuthToken(localStorage.jwtToken);
   
-  // dispatch "SET_CURRENT_USER" action
+   // since Redux store was already cleared out, we have to dispatch the user information in Redux store again.
+  // 4. dispatch "SET_CURRENT_USER" action
   store.dispatch({
     type: SET_CURRENT_USER,
     payload: decoded
