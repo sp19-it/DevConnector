@@ -4,7 +4,7 @@ import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
-export default function TextFieldGroup({ // deconstructing props {  }
+export default function InputField({ // deconstructing props {  }
   type,
   placeholder,
   name,
@@ -32,7 +32,7 @@ export default function TextFieldGroup({ // deconstructing props {  }
 }
 
 // when TextField Group component is loaded, below should be given so that component can land successfully
-TextFieldGroup.propTypes = {
+InputField.propTypes = {
   type: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
   name: PropTypes.string.isRequired,
@@ -44,7 +44,7 @@ TextFieldGroup.propTypes = {
 }
 
 // default type as "text"
-TextFieldGroup.defaultProps = {
+InputField.defaultProps = {
   type: 'text'
 }
 

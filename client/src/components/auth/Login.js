@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { loginUser } from '../../actions/authActions'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import TextFieldGroup from '../common/TextFieldGroup'
+import InputField from '../common/InputField'
 
 class Login extends Component {
 
@@ -61,18 +61,18 @@ class Login extends Component {
               <h1 className="display-4 text-center">Log In</h1>
               <p className="lead text-center">Sign in to your DevConnector account</p>
               <form onSubmit={ this.onSubmit }>
-                <TextFieldGroup
+                <InputField
                   type="email"
-                  placeholder="Email Address" 
+                  placeholder="Email" 
                   name="email"
                   value={this.state.email}
                   onChange={this.onChange}
                   error={errors.email}
                 />
 
-                <TextFieldGroup
+                <InputField
                   type="password"
-                  placeholder="password Address"
+                  placeholder="password"
                   name="password"
                   value={this.state.password}
                   onChange={this.onChange}

@@ -31,7 +31,7 @@ import PropTypes from 'prop-types';
   const authLinks = (
     <ul className="navbar-nav ml-auto">
       <li className="nav-item">
-        <Link className="nav-link" to="/feed">Post</Link>
+        <Link className="nav-link" to="/posts">Post</Link>
       </li>
 
       <li className="nav-item">

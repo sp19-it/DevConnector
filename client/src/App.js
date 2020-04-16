@@ -14,6 +14,9 @@ import Landing from './components/layout/Landing';
 import Footer from './components/layout/Footer';
 import Register from './components/auth/Register';
 import Login from './components/auth/Login';
+import Posts from './components/posts/Posts';
+import Post from './components/post/Post';
+
 import jwt_decode from 'jwt-decode';
 import setAuthToken from './utils/setAuthToken';
 import { SET_CURRENT_USER } from './actions/types';
@@ -52,6 +55,8 @@ class App extends Component {
           <Route exact path="/" component={ Landing } />
           <Route exact path="/register" component={ Register } />
           <Route exact path="/login" component={ Login } />
+          <Route exact path="/posts" component={ Posts }/>
+          <Route exact path="/posts/:id" component={ Post }/>
           <Footer />
         </Router>
       </Provider>
