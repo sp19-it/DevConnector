@@ -16,11 +16,15 @@ import Register from './components/auth/Register';
 import Login from './components/auth/Login';
 import Posts from './components/posts/Posts';
 import Post from './components/post/Post';
+import NotFound from './components/common/NotFound';
 
 import jwt_decode from 'jwt-decode';
 import setAuthToken from './utils/setAuthToken';
 import { SET_CURRENT_USER } from './actions/types';
 import { logoutUser } from './actions/authActions';
+import Profiles from './components/profiles/Profiles';
+import Profile from './components/profile/Profile';
+import CreateProfile from './components/create-profile/CreateProfile';
 
 // when the user comes back to the app (re-open the browser), 1) check if the token is still stored in localStorage 2) check if the token has expired
 if (localStorage.jwtToken) {
@@ -55,8 +59,12 @@ class App extends Component {
           <Route exact path="/" component={ Landing } />
           <Route exact path="/register" component={ Register } />
           <Route exact path="/login" component={ Login } />
+          <Route exact path="/profiles" component = {Profiles} />
+          <Route exact path="/profiles/:handle" component = {Profile} />
+          <Route exact path="/create-profile" component = {CreateProfile} />
           <Route exact path="/posts" component={ Posts }/>
           <Route exact path="/posts/:id" component={ Post }/>
+          <Route exact path="/not-found" component={ NotFound }/>
           <Footer />
         </Router>
       </Provider>

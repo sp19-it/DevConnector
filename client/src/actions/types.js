@@ -5,8 +5,8 @@
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
 export const GET_ERRORS = "GET_ERRORS"; // SET_ERRORS is a better name
 
-
-
+export const GET_PROFILE = "GET_PROFILE";
+export const GET_PROFILES = "GET_PROFILES";
 
 export const GET_POST = "GET_POST";
 export const GET_POSTS = "GET_POSTS";
