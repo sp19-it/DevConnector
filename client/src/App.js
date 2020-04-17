@@ -22,9 +22,14 @@ import jwt_decode from 'jwt-decode';
 import setAuthToken from './utils/setAuthToken';
 import { SET_CURRENT_USER } from './actions/types';
 import { logoutUser } from './actions/authActions';
+
+import Dashboard from './components/dashboard/Dashboard';
 import Profiles from './components/profiles/Profiles';
 import Profile from './components/profile/Profile';
 import CreateProfile from './components/create-profile/CreateProfile';
+import EditProfile from './components/edit-profile/EditProfile';
+import AddExperience from './components/add-credentials/AddExperience';
+import AddEducation from './components/add-credentials/AddEducation';
 
 // when the user comes back to the app (re-open the browser), 1) check if the token is still stored in localStorage 2) check if the token has expired
 if (localStorage.jwtToken) {
@@ -59,9 +64,13 @@ class App extends Component {
           <Route exact path="/" component={ Landing } />
           <Route exact path="/register" component={ Register } />
           <Route exact path="/login" component={ Login } />
+          <Route exact path="/dashboard" component={ Dashboard } />
           <Route exact path="/profiles" component = {Profiles} />
           <Route exact path="/profiles/:handle" component = {Profile} />
           <Route exact path="/create-profile" component = {CreateProfile} />
+          <Route exact path="/edit-profile" component = {EditProfile} />
+          <Route exact path="/add-experience" component={AddExperience} />
+          <Route exact path="/add-education" component={AddEducation} />
           <Route exact path="/posts" component={ Posts }/>
           <Route exact path="/posts/:id" component={ Post }/>
           <Route exact path="/not-found" component={ NotFound }/>

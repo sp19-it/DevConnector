@@ -37,3 +37,14 @@ img {
 .form-control::placeholder {
   color: #bbb !important;
 }
+
+select option { 
+    padding: 0 4px; 
+}
+
+select{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: 5px;
+}

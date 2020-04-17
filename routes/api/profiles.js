@@ -213,7 +213,7 @@ router.post(
           location: req.body.location,
           from: req.body.from,
           to: req.body.to,
-          current: req.body.to,
+          current: req.body.current,
           description: req.body.description
         };
 
